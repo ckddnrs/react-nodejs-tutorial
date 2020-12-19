@@ -1,4 +1,6 @@
 import react, { Component } from 'react';
+import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import './App.css';
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -6,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import Customer from './components/Customer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core';
 
@@ -36,6 +37,16 @@ class App extends Component {
       searchKeyword: ''
     }
   }
+  stateRefresh = () => {
+    this.setState({
+      customers: '',
+      completed: 0,
+      searchKeyword: ''
+    });
+    this.callApi()
+      .then(res => this.setState({ customers: res }))
+      .catch(err => console.log(err));
+  }
 
   //서버에 접근해서 데이터 등을 받아오는 작업
   componentDidMount() {
@@ -56,10 +67,16 @@ class App extends Component {
     this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   }
 
+  handleValueChange = (e) => {
+    let nextState = {};
+    nextState[e.target.name] = e.target.value;
+    this.setState(nextState);
+  }
+
   render() {
     const filteredComponents = (data) => {
       return data.map((c) => {
-        return <Customer key={c.id} Number={c.Number} Month={c.Month} Sex={c.Sex} FinalReportOwner={c.FinalReportOwner} />
+        return <Customer key={c.id} id={c.id} Number={c.Number} Month={c.Month} Sex={c.Sex} FinalReportOwner={c.FinalReportOwner} />
       });
     }
     const { classes } = this.props;
@@ -86,8 +103,8 @@ class App extends Component {
             }
           </TableBody>
         </Table>
+        <CustomerAdd stateRefresh={this.stateRefresh} />
       </Paper>
-
     );
   }
 }

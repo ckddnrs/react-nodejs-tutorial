@@ -30,4 +30,15 @@ app.get('/api/customers', (req, res) => {
     );
 });
 
+app.post('/api/customers', (req, res) => {
+    let sql = 'INSERT INTO manage VALUES (NULL, ?, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)';
+    let Number = req.body.Number;
+    let params = [Number];
+    connection.query(sql, params,
+        (err, rows, fields) => {
+            res.send(rows);
+        }
+    );
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
