@@ -20,7 +20,9 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
-//api/customers  로  접속했을 때 아래와같은 함수를 실행
+const multer = require('multer');
+const upload = multer({ dest: './upload' })
+
 app.get('/api/customers', (req, res) => {
     connection.query(
         "SELECT * FROM manage",
@@ -30,15 +32,19 @@ app.get('/api/customers', (req, res) => {
     );
 });
 
-app.post('/api/customers', (req, res) => {
-    let sql = 'INSERT INTO manage VALUES (NULL, ?, NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)';
-    let Number = req.body.Number;
-    let params = [Number];
+app.use('/image', express.static('./upload'));
+
+app.post('/api/customers', upload.single('image'), (req, res) => {
+    let sql = 'INSERT INTO manage VALUES (NULL, ?, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)';
+    let name = req.body.name;
+    console.log(name);
+    let params = [name];
     connection.query(sql, params,
         (err, rows, fields) => {
             res.send(rows);
         }
     );
 });
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

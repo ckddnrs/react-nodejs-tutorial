@@ -19,7 +19,7 @@ class CustomerAdd extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            Number: '',
+            userName: '',
             open: false
         }
     }
@@ -32,8 +32,15 @@ class CustomerAdd extends React.Component {
                 this.props.stateRefresh();
             })
         this.setState({
-            Number: '',
+            userName: '',
             open: false
+        })
+    }
+
+    handleFileChange = (e) => {
+        this.setState({
+            file: e.target.files[0],
+            fileName: e.target.value
         })
     }
 
@@ -46,7 +53,7 @@ class CustomerAdd extends React.Component {
     addCustomer = () => {
         const url = '/api/customers';
         const formData = new FormData();
-        formData.append('Number', this.state.Number);
+        formData.append('name', this.state.userName);
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -63,13 +70,12 @@ class CustomerAdd extends React.Component {
 
     handleClose = () => {
         this.setState({
-            Number: '',
+            userName: '',
             open: false
         })
     }
 
     render() {
-        const { classes } = this.props;
         return (
             <div>
                 <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
@@ -78,7 +84,7 @@ class CustomerAdd extends React.Component {
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle>고객 추가</DialogTitle>
                     <DialogContent>
-                        <TextField label="이름" type="text" name="Number" value={this.state.Number} onChange={this.handleValueChange} /><br />
+                        <TextField label="이름" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange} /><br />
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color="primary" onClick={this.handleFormSubmit}>추가</Button>
