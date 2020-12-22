@@ -104,13 +104,15 @@ class App extends Component {
     this.state = {
       customers: '',
       completed: 0,
+      searchKeyword: ''
     }
   }
 
   stateRefresh = () => {
     this.setState({
       customers: '',
-      completed: 0
+      completed: 0,
+      searchKeyword: ''
     });
     this.callApi()
       .then(res => this.setState({ customers: res }))
@@ -143,12 +145,15 @@ class App extends Component {
 
   render() {
     const filteredComponents = (data) => {
+      data = data.filter((c) => {
+        return c.Number.indexOf(this.state.searchKeyword) > -1;
+      });
       return data.map((c) => {
         return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} Number={c.Number} Birthday={c.Birthday} Month={c.Month} Sex={c.Sex} />
       });
     }
     const { classes } = this.props;
-    const cellList = ["번호", "이름", "생년월일", "성별", "직업", "설정"];
+    const cellList = ["*", "번호", "출생", "개월수", "성별", "설정"];
     return (
       <div className={classes.root}>
         <AppBar position="static">
